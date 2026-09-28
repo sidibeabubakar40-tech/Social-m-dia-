@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { createPost, listPosts, normalizePlatform, updatePostStatus } from "@/lib/store";
 
 export async function GET() {
-  return NextResponse.json({ ok: true, posts: listPosts() });
+  try {
+    return NextResponse.json({ ok: true, posts: await listPosts() });
+  } catch {
+    return NextResponse.json({ error: "Base de données indisponible." }, { status: 503 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -13,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "title, brief et platform sont obligatoires." }, { status: 400 });
     }
 
-    const post = createPost({
+    const post = await createPost({
       title: body.title,
       platform,
       status: "draft",
@@ -23,8 +27,8 @@ export async function POST(request: Request) {
       audience: body.audience,
       hook: body.hook,
       cta: body.cta,
-      hashtags: body.hashtags,
-      creative: body.creative,
+      hashtags: Array.isArray(body.hashtags) ? body.hashtags : [],
+      creative: body.creative
     });
 
     return NextResponse.json({ ok: true, post }, { status: 201 });
@@ -39,10 +43,14 @@ export async function PATCH(request: Request) {
     if (!body.id || !["draft", "pending_review", "scheduled"].includes(body.status)) {
       return NextResponse.json({ error: "Transition de statut invalide." }, { status: 400 });
     }
-    const post = updatePostStatus(body.id, body.status);
+
+    const post = await updatePostStatus(body.id, body.status);
     if (!post) return NextResponse.json({ error: "Contenu introuvable." }, { status: 404 });
+
     return NextResponse.json({ ok: true, post });
-  } catch {
-    return NextResponse.json({ error: "Impossible de modifier le contenu." }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : "Impossible de modifier le contenu."
+    }, { status: 400 });
   }
 }
