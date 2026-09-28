@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     const post = await createPost({
       title: body.title,
       platform,
-      status: "draft",
+      status: "pending_review",
       brief: body.brief,
       caption: body.caption,
       objective: body.objective,
@@ -44,7 +44,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Transition de statut invalide." }, { status: 400 });
     }
 
-    const post = await updatePostStatus(body.id, body.status);
+    const post = await updatePostStatus(body.id, body.status as import("@/lib/types").PostStatus);
     if (!post) return NextResponse.json({ error: "Contenu introuvable." }, { status: 404 });
 
     return NextResponse.json({ ok: true, post });
