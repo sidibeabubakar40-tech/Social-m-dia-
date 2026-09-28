@@ -11,7 +11,7 @@ export interface StoredPost extends SocialPost {
   updatedAt: string;
 }
 
-const posts: StoredPost[] = [];
+const posts: StoredPost[] = [\n  { id: "demo-1", title: "Conseil de la semaine", platform: "instagram", status: "pending_review", brief: "Partager un conseil utile à la communauté.", caption: "Un conseil simple pour mieux communiquer.", hook: "Votre contenu peut être plus clair.", cta: "Dites-nous votre avis.", hashtags: ["#SIDIBESTUDIO"], creative: "Post social 4:5", updatedAt: new Date().toISOString() }\n];
 
 export function listPosts() {
   return posts;
