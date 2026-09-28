@@ -2,16 +2,18 @@ import { NextResponse } from "next/server";
 import { runSocialWorkflow } from "@/lib/agents/orchestrator";
 import type { WorkflowInput } from "@/lib/agents/types";
 
+const platforms = ["instagram", "facebook", "tiktok", "linkedin"] as const;
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Partial<WorkflowInput>;
 
-    if (!body.brief || !body.platform) {
-      return NextResponse.json({ error: "brief et platform sont obligatoires." }, { status: 400 });
+    if (!body.brief?.trim() || !body.platform || !platforms.includes(body.platform)) {
+      return NextResponse.json({ error: "brief et platform valide sont obligatoires." }, { status: 400 });
     }
 
     const result = await runSocialWorkflow({
-      brief: body.brief,
+      brief: body.brief.trim(),
       platform: body.platform,
       objective: body.objective,
       audience: body.audience,
