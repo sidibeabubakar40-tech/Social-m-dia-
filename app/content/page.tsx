@@ -10,6 +10,8 @@ export default function ContentPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [approved, setApproved] = useState(false);
 
   async function generate() {
     setLoading(true); setError(""); setResult(null);
@@ -22,6 +24,9 @@ export default function ContentPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Erreur");
       setResult(data.result);
+      const save = await fetch("/api/content", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: data.result.copy.hook, brief, platform, objective: "Développer visibilité et engagement", caption: data.result.copy.caption, hook: data.result.copy.hook, cta: data.result.copy.cta, hashtags: data.result.copy.hashtags, creative: data.result.creative.concept }) });
+      const saved = await save.json();
+      if (save.ok) setSavedId(saved.post.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur inconnue");
     } finally { setLoading(false); }
@@ -53,7 +58,7 @@ export default function ContentPage() {
     </section>
 
     {result && <section className="moduleCard resultCard">
-      <div className="resultHead"><div><p className="eyebrow">PROPOSITION GÉNÉRÉE</p><h2>Contenu prêt à valider</h2></div><span className="approval">Validation requise</span></div>
+      <div className="resultHead"><div><p className="eyebrow">PROPOSITION GÉNÉRÉE</p><h2>Contenu prêt à valider</h2></div><span className="approval">{approved ? "Approuvé · planifié" : "Validation requise"}</span></div>
       <div className="resultGrid">
         <article><h3>01 · Stratégie</h3><b>{result.strategy.objective}</b><p>{result.strategy.angle}</p><small>Piliers : {result.strategy.pillars.join(" · ")}</small></article>
         <article><h3>02 · Copywriting</h3><b>{result.copy.hook}</b><p>{result.copy.caption}</p><strong>{result.copy.cta}</strong><small>{result.copy.hashtags.join(" ")}</small></article>
