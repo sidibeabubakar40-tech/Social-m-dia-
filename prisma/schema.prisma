@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SocialPost {
+  id          String   @id @default(cuid())
+  title       String
+  platform    String
+  status      String   @default("draft")
+  brief       String
+  objective   String?
+  audience    String?
+  hook        String?
+  caption     String?
+  cta         String?
+  hashtags    String[] @default([])
+  creative    String?
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  approvals Approval[]
+  agentRuns AgentRun[]
+}
+
+model SocialAccount {
+  id           String   @id @default(cuid())
+  platform     String
+  displayName  String
+  accountId    String?
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  scopes       String[] @default([])
+  connected    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  objective   String?
+  status      String   @default("draft")
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AgentRun {
+  id        String      @id @default(cuid())
+  agent     String
+  mode      String
+  status    String      @default("completed")
+  input     Json
+  output    Json?
+  postId    String?
+  post      SocialPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
+  createdAt DateTime    @default(now())
+
+  @@index([postId])
+  @@index([agent, createdAt])
+}
+
+model Approval {
+  id        String     @id @default(cuid())
+  postId    String
+  status    String     @default("pending")
+  approvedAt DateTime?
+  createdAt DateTime   @default(now())
+  post      SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  platform   String
+  senderName String
+  externalId String?
+  body       String
+  status     String   @default("new")
+  reply      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AnalyticsSnapshot {
+  id          String   @id @default(cuid())
+  platform    String
+  capturedAt  DateTime @default(now())
+  impressions Int      @default(0)
+  reach       Int      @default(0)
+  engagement  Int      @default(0)
+  clicks      Int      @default(0)
+  posts       Int      @default(0)
+
+  @@index([platform, capturedAt])
+}
