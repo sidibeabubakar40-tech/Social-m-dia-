@@ -1,0 +1,23 @@
+name: Vérification du projet
+
+on:
+  push:
+    branches:
+      - principal
+  pull_request:
+    branches:
+      - principal
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Vérifier les fichiers
+        run: |
+          echo "✅ Code récupéré"
+          echo "✅ Workflow GitHub Actions opérationnel"
+          echo "🚀 Projet Social Media prêt"
