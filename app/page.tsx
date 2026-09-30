@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BarChart3, CalendarDays, ChevronRight, Clock3, FileText, Home, Inbox, Instagram, Linkedin, MessageCircle, MoreHorizontal, Plus, Settings, Sparkles, Target, Users, Video, Wand2 } from "lucide-react";
+import { BarChart3, CalendarDays, Camera, ChevronRight, Clock3, FileText, Home, Inbox, BriefcaseBusiness, MessageCircle, MoreHorizontal, Plus, Settings, Sparkles, Target, Users, Video, Wand2 } from "lucide-react";
 
 const nav = [
   ["Dashboard",Home],["Contenus",FileText],["Calendrier",CalendarDays],["Messages",MessageCircle],
@@ -62,12 +62,12 @@ export default function HomePage(){
       </section>
 
       <section className="panel accounts"><div className="panelHead"><div><h2>Comptes sociaux</h2><p>Connexion par OAuth officiel uniquement. Aucun mot de passe n’est stocké.</p></div><button className="ghost">Gérer les comptes</button></div>
-        <div className="accountGrid"><Account icon={<Instagram size={19}/>} name="Instagram"/><Account icon={<span className="fb">f</span>} name="Facebook"/><Account icon={<Video size={19}/>} name="TikTok"/><Account icon={<Linkedin size={19}/>} name="LinkedIn"/></div>
+        <div className="accountGrid"><Account icon={<Camera size={19}/>} name="Instagram"/><Account icon={<span className="fb">f</span>} name="Facebook"/><Account icon={<Video size={19}/>} name="TikTok"/><Account icon={<BriefcaseBusiness size={19}/>} name="LinkedIn"/></div>
       </section>
     </section>
   </main>;
 }
 
 function Stat({title,value,change,icon:Icon}:{title:string,value:string,change:string,icon:any}){return <div className="stat"><div className="statIcon"><Icon size={18}/></div><span>{title}</span><strong>{value}</strong><small>{change} <em>vs période précédente</em></small></div>}
-function Platform({name}:{name:string}){return <span className="platformBadge">{name==="Instagram"?<Instagram size={16}/>:name==="LinkedIn"?<Linkedin size={16}/>:<Video size={16}/>}</span>}
+function Platform({name}:{name:string}){return <span className="platformBadge">{name==="Instagram"?<Camera size={16}/>:name==="LinkedIn"?<BriefcaseBusiness size={16}/>:<Video size={16}/>}</span>}
 function Account({icon,name}:{icon:React.ReactNode,name:string}){return <div className="account"><div className="accountIcon">{icon}</div><div><b>{name}</b><span>Non connecté</span></div><button>Connecter</button></div>}
