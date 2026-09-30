@@ -2,11 +2,9 @@ name: Vérification du projet
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   verification:
@@ -16,8 +14,17 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
-      - name: Vérifier les fichiers
-        run: |
-          echo "✅ Code récupéré"
-          echo "✅ Workflow GitHub Actions opérationnel"
-          echo "🚀 Projet Social Media prêt"
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm install
+
+      - name: Générer Prisma Client
+        run: npx prisma generate
+
+      - name: Vérifier la compilation
+        run: npm run build
