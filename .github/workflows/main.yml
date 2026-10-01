@@ -27,3 +27,6 @@ jobs:
 
       - name: Vérifier la compilation
         run: npm run build
+
+      - name: Vérification terminée
+        run: echo "Build et vérifications terminés."
